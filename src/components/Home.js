@@ -1,24 +1,33 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Header from "./Header";
+import SideMenu from "./SideMenu";
+import { menus } from "../utils/constant";
 function Home(props) {
     const navigate = useNavigate();
-    if(!props.isLoggedIn){
-        navigate("/login");
-    }
+    const { isLoggedIn } = props;
+
+    console.log("props :", props);
+
     const [user, setUser] = useState({
         "name": "default",
         "avatar_url": "default"
     });
-    
+
     const getUserDetails = () => {
-        fetch("/users", {
+        fetch(`${process.env.REACT_APP_PROXY_URL}/users`, {
             method: "GET"
         })
-            .then(resp => {
-                setUser(resp.json());
-            })
-            .catch(err => console.log("err", err));
+        .then(resp => {
+            //console.log("user Details are",resp.json());
+            
+            return resp.json();
+        })
+        .then((data) => {
+            console.log("user data is :",data);
+            setUser(data);
+        }) 
+        .catch(err => console.log("err", err));
     }
     const fetchRepo = () => {
         fetch("/repos", {
@@ -26,15 +35,18 @@ function Home(props) {
         })
     }
     useEffect(() => {
-        getUserDetails();
+        isLoggedIn && getUserDetails();
+        !isLoggedIn && navigate("/login");
     }, [])
     return (<div className="container">
-        {props.isLoggedIn ? 
-        (<div>
-            <div className="repos">Repos will go here</div>
-            <div className="activity">activity will got here</div>
-        </div>) : "Please Login to Access this Page"}
-       
+        {props.isLoggedIn ?
+            (<div>
+                <SideMenu menu={menus}/>
+                <Header user={user}/>
+                <div className="repos">Repos will go here</div>
+                <div className="activity">activity will got here</div>
+            </div>) : "Please Login to Access this Page"}
+
     </div>
     )
 }
