@@ -1,15 +1,44 @@
 import { useEffect, useState } from 'react';
-import './App.css';
-import { LOGIN_URL } from "./utils/constant";
+import { LOGIN_URL } from "../utils/constant";
+import { useNavigate } from 'react-router-dom';
 
-
-function Login() {
+function Login(props) {
   console.log("process", process.env);
   const [isLoading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    
-  }, []);
+    const AppUrl = window.location.href;
+    const isCode = AppUrl.includes("?code=");
+    let code;
+    if (isCode) {
+      let UrlArray = AppUrl.split('?code=');
+      code = UrlArray[1];
+
+      fetch(`${process.env.REACT_APP_PROXY_URL}/auth`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          client_id: `${process.env.REACT_APP_CLIENT_ID}`,
+          client_secret: `${process.env.REACT_APP_CLIENT_SECRET}`,
+          code: `${code}`,
+          redirect_uri: `${process.env.REACT_APP_REDIRECT_URL}`,
+        })
+  
+      })
+        .then(response =>  response.text()
+        )
+        .then(data => {
+          console.log("success :", data);
+          props.changeLogIn(true);
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log('Error :', error);
+        })
+    }
+   
+  }, [isLoading]);
 
   return (
     <div className="container" style={{ background: 'lightgrey' }}>
@@ -41,11 +70,17 @@ function Login() {
                   display: 'flex',
                   textDecoration: 'none'
                 }}
-                  onClick={() => { setLoading(true)}}
+                  onClick={() => { setLoading(true) }}
                   href={`${process.env.REACT_APP_LOGIN_URL}?client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}`}>
                   {isLoading ? <img src={`${process.env.PUBLIC_URL}/ajax-loader.gif`} className="loader"></img> : 'Login'}
                 </a>
               </button>
+              <button onClick={() => fetch(`${process.env.REACT_APP_PROXY_URL}/auth1`,
+
+              {
+                credentials: 'same-origin',
+                method: 'GET'
+              }).then((success) => console.log("success",success)) }>New button</button>
             </>
 
 
