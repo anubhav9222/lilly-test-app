@@ -75,12 +75,12 @@ function Login(props) {
                   {isLoading ? <img src={`${process.env.PUBLIC_URL}/ajax-loader.gif`} className="loader"></img> : 'Login'}
                 </a>
               </button>
-              <button onClick={() => fetch(`${process.env.REACT_APP_PROXY_URL}/auth1`,
+              {/* <button onClick={() => fetch(`${process.env.REACT_APP_PROXY_URL}/auth1`,
 
               {
                 credentials: 'same-origin',
                 method: 'GET'
-              }).then((success) => console.log("success",success)) }>New button</button>
+              }).then((success) => console.log("success",success)) }>New button</button> */}
             </>
 
 

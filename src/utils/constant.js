@@ -1,3 +1,4 @@
 export const {
-    LOGIN_URL
+    LOGIN_URL,
+    menus
 }  = window;
