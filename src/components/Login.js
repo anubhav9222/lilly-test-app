@@ -41,13 +41,14 @@ function Login(props) {
   }, [isLoading]);
 
   return (
-    <div className="container" style={{ background: 'lightgrey' }}>
+    <div className="container" style={{ background: 'white' }}>
       <div className='card col-lg-6' style={{
-        background: "grey", width: '50%',
+        background: "#ff5e007a", width: '50%',
         border: '1px solid white',
         borderRadius: 8,
         textAlign: 'center',
-        padding: '10px'
+        padding: '10px',
+        boxShadow : 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
       }}>
         <header style={{ padding: 10 }}>
           <span><img src={`${process.env.PUBLIC_URL}/lilly_logo.png`}></img></span>

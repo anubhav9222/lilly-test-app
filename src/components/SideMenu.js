@@ -12,7 +12,7 @@ function SideMenu(props) {
                 padding: '10px 30px', background: 'white',
             }} />
             { menu.map((menu, id) => {
-                return <div key={id} className="menu" ><img alt="icon" style={{width : 20, height : 20,padding: 10}} src={`${process.env.PUBLIC_URL}/${menu.logo_src}`}/>{menu.name}</div>
+                return <div key={id} className="menu" onClick={() => props.fetchRepoList()} ><img alt="icon" style={{width : 20, height : 20,padding: 10}} src={`${process.env.PUBLIC_URL}/${menu.logo_src}`}/>{menu.name}</div>
             })}
 
             </div>
