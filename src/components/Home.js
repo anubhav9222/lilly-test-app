@@ -16,6 +16,8 @@ function Home(props) {
         "avatar_url": "default"
     });
     const [repo, setrepo] = useState([]);
+    const [activity, setActivities] = useState([]);
+    
 
     const getUserDetails = () => {
         fetch(`${process.env.REACT_APP_PROXY_URL}/users`, {
@@ -32,26 +34,39 @@ function Home(props) {
             })
             .catch(err => console.log("err", err));
     }
-    const fetchRepoList = () => {
-        fetch(`${process.env.REACT_APP_PROXY_URL}/repos?reposUrl=${user?.repos_url}`, {
-            method: 'GET',
-        })
-            .then((data) => data.json())
-            .then((data) => {
-                console.log("repo list is :", data);
-                setrepo(data);
-            })
+    const fetchRepoList = (data,id) => {
+        // fetch(`${process.env.REACT_APP_PROXY_URL}/repos?reposUrl=${user?.repos_url}`, {
+        //     method: 'GET',
+        // })
+        //     .then((data) => data.json())
+        //     .then((data) => {
+        //         console.log("repo list is :", data);
+        //         setrepo(data);
+        //     })
+        if(!data)
+        return
 
-    }
+        console.log("inside fetch REpo: ",data,id);
+        switch(id) {
+            case 0 : setrepo(data);
+                    setActivities([]);
+                    break;
+            case 1 : setActivities(data)
+                    setrepo([]);
+                    break;
+            }
+        }
+        
+        // else setrepo(data);
     useEffect(() => {
-
+        console.log("use effetc for fetcRepo")
     },[repo]) 
     useEffect(() => {
         isLoggedIn && getUserDetails();
         !isLoggedIn && navigate("/login");
     }, [])
 
-    const renderTableBody = () => {
+    const renderRepoBody = () => {
         return repo?.map((repo, id) => {
             return [
             <tr key={id}>
@@ -62,12 +77,25 @@ function Home(props) {
             </tr>]
         })
     }
+    const renderActivityBody = () => {
+        return activity?.map((act, id) => {
+            return [
+            <tr key={id}>
+                <td>{act.id}</td>
+                <td>{act.type}</td>
+                <td>{act?.repo?.name}</td>
+                <td><a href={act?.repo?.url} target="_blank">Link</a></td>
+                <td>{act.public ? 'Yes' : 'No'}</td>
+
+            </tr>]
+        })
+    }
     return (<div className="container">
         {props.isLoggedIn ?
             (<div>
-                <SideMenu menu={menus} fetchRepoList={fetchRepoList} />
+                <SideMenu menu={menus} fetchRepoList={fetchRepoList} user={user} />
                 <Header user={user} />
-                { repo.length ? <table border="1 px solid">
+                { repo?.length ? <table border="1 px solid">
                     <thead>
                     <tr>
                         <th>Repo Name</th>
@@ -77,7 +105,22 @@ function Home(props) {
                     </tr>
                     </thead>
                     <tbody>
-                    {renderTableBody()}
+                    {renderRepoBody()}
+                    </tbody>
+                </table> : <></>}
+
+                { activity?.length ? <table border="1 px solid">
+                    <thead>
+                    <tr>
+                        <th>id </th>
+                        <th>type</th>
+                        <th>Repo Name</th>
+                        <th>Repo Url</th>
+                        <th>Public</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {renderActivityBody()}
                     </tbody>
                 </table> : <></>}
             </div>) : "Please Login to Access this Page"}
